@@ -1,5 +1,7 @@
 import React from 'react'
 import codesync from '../assets/code-sync.png'
+import { useNavigate } from 'react-router-dom';
+import { AuthData } from '../context/Authcontext';
 
 
 const Home = () => {
@@ -19,6 +21,17 @@ const Home = () => {
             }
         }
     `;
+
+  const { login, isAuth } = AuthData();
+  const navigate = useNavigate();
+
+  const googleLogin = async () => {
+    if(!isAuth){
+      await login();
+    }
+    navigate('/collaboration')
+  };
+
 
   return (
     <div>
@@ -56,7 +69,7 @@ const Home = () => {
         </p>
 
         <div className="flex items-center gap-2 mt-8 text-sm">
-          <button className="px-6 py-2.5 bg-green-600 hover:bg-green-700 transition rounded-full cursor-pointer">
+          <button className="px-6 py-2.5 bg-green-600 hover:bg-green-700 transition rounded-full cursor-pointer" onClick={googleLogin}>
             Get Started
           </button>
           <button className="flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-6 py-2.5 cursor-pointer">
