@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @layer base{
-    input{
-        @apply mt-2 w-full rounded-md outline-none px-3 py-1 bg-gray-600  font-normal 
+    input, textarea{
+        @apply  w-full rounded-md outline-none px-3 py-1 bg-[#1e1f2b] text-sm border border-gray-600
     }
 }
 

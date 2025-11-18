@@ -7,6 +7,7 @@ import Activity from './pages/Activity'
 import Collaboration from './pages/Collaboration'
 import { AuthData } from './context/Authcontext'
 import Login from './pages/Login'
+import ProjectDetails from './pages/ProjectDetails'
 
 
 const App = () => {
@@ -34,6 +35,11 @@ const App = () => {
         <Route path='/collaboration' element={isAuth ? <Collaboration /> : <Navigate to="/login" />} />
 
         <Route path='/project/:roomId' element={isAuth ? <Project /> : <Navigate to="/login" />} />
+
+        <Route path='/project/:roomId/details' element={isAuth ? <ProjectDetails /> : <Navigate to="/login" />} />
+
+        <Route path='/projectdetails/:roomId' element={isAuth ? <ProjectDetails /> : <Navigate to="/login" />} />
+        
       </Routes>
       
     </div>

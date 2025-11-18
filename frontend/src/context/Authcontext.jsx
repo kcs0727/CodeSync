@@ -2,6 +2,7 @@ import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { auth, googleProvider } from "../firebase/config";
+import { createUserIfNotExists } from "../firestore/userService";
 
 
 const AuthContext = createContext();
@@ -23,8 +24,12 @@ export const AuthProvider = ({ children }) => {
 
 
     async function login() {
-        await signInWithPopup(auth, googleProvider);
-        setUser(auth.currentUser);
+        const result= await signInWithPopup(auth, googleProvider);
+        const firebaseUser = result.user;
+
+        await createUserIfNotExists(firebaseUser);
+
+        setUser(firebaseUser);
         setisAuth(true);
     }
 
@@ -36,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    
     return (
         <AuthContext.Provider value={{ user, isAuth, login, logout, loading }}>
             {children}

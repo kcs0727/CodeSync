@@ -5,6 +5,7 @@ import { initSocket } from '../socketio/socket';
 import ACTIONS from '../socketio/actions';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { AuthData } from '../context/Authcontext';
 
 
 const Project = () => {
@@ -13,8 +14,7 @@ const Project = () => {
     const codeRef= useRef(null);
     const navigate = useNavigate();
     const { roomId } = useParams();
-    const location = useLocation();
-    const user = location.state?.user;
+    const {user} = AuthData();
     const [clients, setClients] = useState([]);
 
 
@@ -33,18 +33,18 @@ const Project = () => {
 
             socketRef.current.emit(ACTIONS.JOIN, {
                 roomId,
-                newuser: user,
+                newuser: user.displayName,
             });
 
             socketRef.current.on(ACTIONS.JOINED, ({ clients, newuser, socketId }) => {
-                if (newuser !== user) {
+                if (socketId !== socketRef.current.id) {
                     toast.success(`${newuser} joined the room.`)
+                    socketRef.current.emit(ACTIONS.SYNC_CODE,{
+                        code: codeRef.current,
+                        socketId
+                    });
                 }
                 setClients(clients);
-                socketRef.current.emit(ACTIONS.SYNC_CODE,{
-                    code: codeRef.current,
-                    socketId
-                });
             });
 
             socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {

@@ -27,6 +27,7 @@ function getAllConnectedClients(roomId) {
   ));
 }
 
+
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
@@ -37,28 +38,26 @@ io.on("connection", (socket) => {
     const clients = getAllConnectedClients(roomId);
 
     // Notify existing users that someone joined
-    clients.forEach(({ socketId }) => {
-      io.to(socketId).emit(ACTIONS.JOINED, {
-        clients,
-        newuser,
-        socketId: socket.id,
-      });
+    io.to(roomId).emit(ACTIONS.JOINED, {
+      clients,
+      newuser,
+      socketId: socket.id,
     });
 
   });
 
-  socket.on(ACTIONS.CODE_CHANGE,({roomId, code})=>{
+  socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
     io.to(roomId).emit(ACTIONS.CODE_CHANGE, { code });
   })
 
-  socket.on(ACTIONS.SYNC_CODE,({socketId, code})=>{
+  socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
     io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
   })
 
   socket.on("disconnecting", () => {
     const rooms = [...socket.rooms];
     rooms.forEach((roomId) => {
-      socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
+      socket.to(roomId).emit(ACTIONS.DISCONNECTED, {
         socketId: socket.id,
         username: userSocketMap[socket.id],
       });

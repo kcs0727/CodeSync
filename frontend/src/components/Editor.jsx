@@ -8,11 +8,41 @@ import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
 import ACTIONS from '../socketio/actions';
 
+import { db } from "../firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+import { updateRoomCode } from "../firestore/roomService";
+
 
 const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
     const editorRef = useRef(null);
     const editorInstance = useRef(null);
+    let saveTimeout = null;
+
+    // Load last code from Firestore
+    const loadInitialCode = async () => {
+        try {
+            const roomRef = doc(db, "rooms", roomId);
+            const snap = await getDoc(roomRef);
+
+            if (snap.exists()) {
+                const savedCode = snap.data().lastUpdatedCode || "";
+                editorInstance.current.setValue(savedCode);
+                onCodeChange(savedCode);
+            }
+        } catch (err) {
+            console.log("Error loading code:", err);
+        }
+    };
+
+    // Firestore save
+    const saveToFirestoreDebounced = (code) => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            updateRoomCode(roomId, code);
+        }, 1500);
+    };
+
 
     useEffect(() => {
 
@@ -29,6 +59,8 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
             editorInstance.current.setSize("100%", "100%");
 
+            await loadInitialCode();
+
             editorInstance.current.on("change", (instance, changes) => {
                 const { origin } = changes;
                 const code = instance.getValue();
@@ -40,6 +72,8 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
                         roomId,
                         code
                     });
+
+                    saveToFirestoreDebounced(code);
                 }
             });
 
@@ -66,9 +100,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
     return (
         <div className='h-full w-full bg-[#15161f] p-2 rounded-md'>
-            <textarea ref={editorRef}>
-
-            </textarea>
+            <textarea ref={editorRef}></textarea>
         </div>
     )
 }
