@@ -1,5 +1,5 @@
 import { doc, setDoc, getDoc, updateDoc, arrayUnion, serverTimestamp as timestamp } from "firebase/firestore";
-import { db} from "../firebase/config";
+import { db } from "../firebase/config";
 
 
 export async function createUserIfNotExists(user) {
@@ -19,10 +19,18 @@ export async function createUserIfNotExists(user) {
 }
 
 
-export async function addRoomToUser(userId, roomId, created = false){
+export async function addRoomToUser(userId, roomId, created = false) {
   const userRef = doc(db, "users", userId);
 
-  await updateDoc(userRef, {
-    [created ? "roomsCreated" : "roomsJoined"]: arrayUnion(roomId)
-  });
+  if (created) {
+    await updateDoc(userRef, {
+      roomsCreated: arrayUnion(roomId),
+      roomsJoined: arrayUnion(roomId)
+    });
+  }
+  else{
+     await updateDoc(userRef, {
+      roomsJoined: arrayUnion(roomId)
+    });
+  }
 }
