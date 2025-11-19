@@ -87,7 +87,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
         if (!socketRef.current) return;
 
         socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
-            if (code !== null && code !== editorInstance.current.getValue()) {
+            if (code !== editorInstance.current.getValue()) {
                 // Only update if the code is different (avoid cursor jump)
                 editorInstance.current.setValue(code);
             }

@@ -3,7 +3,7 @@ import Editor from '../components/Editor';
 import Sidebar from '../components/Sidebar';
 import { initSocket } from '../socketio/socket';
 import ACTIONS from '../socketio/actions';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { AuthData } from '../context/Authcontext';
 
@@ -56,9 +56,9 @@ const Project = () => {
         init();
 
         return () => {
-            socketRef.current.disconnect();
             socketRef.current.off(ACTIONS.JOINED);
             socketRef.current.off(ACTIONS.DISCONNECTED);
+            socketRef.current.disconnect();
         }
     }, []);
     

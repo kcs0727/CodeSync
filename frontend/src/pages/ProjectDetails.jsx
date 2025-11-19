@@ -105,7 +105,7 @@ const ProjectDetails = () => {
           <div className="flex flex-col gap-3">
             {collaborators.map((c, i) => (
               <div key={i} className="flex items-center gap-3 bg-[#1a1b26] p-2 rounded-lg">
-                <img
+                <img key={c.photo || "https://ui-avatars.com/api/?name=User"}
                   src={c.photo || "https://ui-avatars.com/api/?name=User"}
                   className="w-10 h-10 rounded-full object-cover border border-gray-600"
                 />

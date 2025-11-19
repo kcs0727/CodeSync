@@ -20,7 +20,7 @@ const Navbar = () => {
 
             <img src={codesync} alt="codesync" className='h-[50px]' />
 
-            <ul className="text-white flex flex-col md:flex-row items-center md:gap-10">
+            <ul className="text-white flex flex-col sm:flex-row items-center sm:gap-10">
                 <li><NavLink className="hover:text-white/70 transition" to="/">Home</NavLink></li>
                 <li><NavLink className="hover:text-white/70 transition" to="/activity" >Activity</NavLink></li>
                 <li><NavLink className="hover:text-white/70 transition" to="/collaboration" >Collaboration</NavLink></li>

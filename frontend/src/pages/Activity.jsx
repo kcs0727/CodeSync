@@ -1,72 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { AuthData } from '../context/Authcontext';
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
-import toast from 'react-hot-toast';
 
 const Activity = () => {
 
-  const {user} = AuthData();
+  const {user, userData, rooms} = AuthData();
   const navigate = useNavigate();
-  const [userData, setUserData] = useState({});
-  const [rooms, setRooms] = useState([]);
-
-
-  useEffect(() => {
-    if (!user) return;
-
-    const fetchUserAndRooms = async () => {
-      try {
-        //fetchuser
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (!userSnap.exists()) return;
-        const data = userSnap.data();
-        setUserData(data);
-        const roomIds = data.roomsJoined || [];
-
-        //fetch all rooms of user
-        const roomDocs = await Promise.all(
-          roomIds.map(async (id) => {
-            const roomRef = doc(db, "rooms", id);
-            const roomSnap = await getDoc(roomRef);
-
-            if (!roomSnap.exists()) return null;
-            const r = roomSnap.data();
-
-            //fetch room creator name using userID
-            let creatorName = "Unknown";
-            if (r.createdBy) {
-              const cRef = doc(db, "users", r.createdBy);
-              const cSnap = await getDoc(cRef);
-              if (cSnap.exists()) creatorName = cSnap.data().name || creatorName;
-            }
-
-            return { id, creatorName, ...r };
-          })
-        );
-
-        //sorting by updatetime
-        const allRooms = roomDocs.filter(Boolean);
-        allRooms.sort((a, b) => {
-          const d1 = a.lastUpdatedAt?.toDate() || new Date(0);
-          const d2 = b.lastUpdatedAt?.toDate() || new Date(0);
-          return d2 - d1;
-        });
-
-        setRooms(allRooms);
-      }
-      catch (err) {
-        toast.error("Error loading activity");
-        console.error(err);
-      }
-    }
-
-    fetchUserAndRooms();
-
-  }, [user])
+  
 
   const formatDate = (dateLike) => {
     if (!dateLike) return "Unknown";

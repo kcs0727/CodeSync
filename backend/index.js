@@ -9,11 +9,20 @@ import ACTIONS from "./actions.js";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }
+});
+
 
 const port = process.env.PORT || 9000;
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+}));
 
 
 const userSocketMap = {};
