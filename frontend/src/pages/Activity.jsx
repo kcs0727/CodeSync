@@ -16,7 +16,7 @@ const Activity = () => {
 
 
   return (
-    <div className='flex flex-col items-center h-[calc(100vh-70px)] p-2'>
+    <div className='flex flex-col items-center min-h-[calc(100vh-70px)] p-2'>
 
       {/* user card */}
       <div className="w-lg max-w-[95vw]  border-2 border-gray-600 rounded-xl p-4 flex items-center gap-5 md:gap-10 my-3 bg-[#15161f]">

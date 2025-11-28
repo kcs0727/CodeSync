@@ -110,7 +110,7 @@ const Collaboration = () => {
                     <h3 className='text-md font-semibold'>Create New Room</h3>
 
                     <div className="flex gap-2">
-                        <input type="text" placeholder='Room ID' value={newRoomId} onChange={(e) => setNewRoomId(e.target.value)} required />
+                        <input type="text" placeholder='Room ID will be auto-generated' value={newRoomId} disabled required />
 
                         <button type="button" onClick={generateNewRoom} className="bg-indigo-500 hover:bg-indigo-600  px-3 py-1 rounded text-white cursor-pointer">Generate</button>
                     </div>

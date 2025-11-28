@@ -137,10 +137,7 @@ const ProjectDetails = () => {
         </div>
       </div>
 
-      {/* join button */}
-      <div className="flex justify-center">
-
-      </div>
+      
     </div>
   );
 };
